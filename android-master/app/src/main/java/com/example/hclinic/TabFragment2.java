@@ -1,5 +1,6 @@
 package com.example.hclinic;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,7 +12,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Cache;
+import com.android.volley.Network;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,8 +64,53 @@ public class TabFragment2 extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.d("Test", "Intent Called");
-                Intent openAddPage = new Intent(getActivity(), AddTask.class);
-                startActivity(openAddPage);
+//                Intent openAddPage = new Intent(getActivity(), AddTask.class);
+//                startActivity(openAddPage);
+                // Instantiate the cache
+                RequestQueue mRequestQueue = Volley.newRequestQueue(getActivity());
+                String url = "https://hclinic.herokuapp.com/auth";
+//                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+//                        new Response.Listener<String>() {
+//                            @Override
+//                            public void onResponse(String response) {
+//                                // Do something with the response
+//                            }
+//                        },
+//                        new Response.ErrorListener() {
+//                            @Override
+//                            public void onErrorResponse(VolleyError error) {
+//                                // Handle error
+//                            }
+//                        });
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                        new Response.Listener<String>()
+                        {
+                            @Override
+                            public void onResponse(String response) {
+                                // response
+                                Log.d("Response", response);
+                            }
+                        },
+                        new Response.ErrorListener()
+                        {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.d("Error", "error");
+                            }
+                        })
+                {
+                    @Override
+                    protected Map<String, String> getParams()
+                    {
+                        Map<String, String>  params = new HashMap<String, String>();
+                        params.put("email", "EkaSurya");
+                        params.put("password", "ekasurya1997");
+
+                        return params;
+                    }
+                };
+                mRequestQueue.add(stringRequest);
+
             }
 //                int wordListSize = mWordList.size();
 //                // Add a new word to the wordList.
